@@ -153,8 +153,8 @@ def format_output(changes, no_trunc=False):
     print("-" * terminal_width)
     header = (f"{'PID':<8} {'内存变化':<20} {'变化率(%)':<10} "
              f"{'原始内存':<20} {'现在内存':<20} {'命令行':<{cmd_width}}")
-    subheader = (f"{'':<8} {'(KB/GB)':<20} {'':<10} "
-                f"{'(KB/GB)':<20} {'(KB/GB)':<20} {'':<{cmd_width}}")
+    subheader = (f"{'':<8} {'(KB/GB)':<20} {' ':<17} "
+                f"{'(KB/GB)':<24} {'(KB/GB)':<20} {'':<{cmd_width}}")
     print(header)
     print(subheader)
     print("-" * terminal_width)
@@ -185,8 +185,8 @@ def format_output(changes, no_trunc=False):
         
         print(f"{item['pid']:<8} "
               f"{change_str:<20} "
-              f"{item['change_rate']:+9.1f} "
-              f"{mem1_str:<20} "
+              f"{item['change_rate']:+9.1f} {' ':<8}"
+              f"{mem1_str:<24} "
               f"{mem2_str:<20} "
               f"{cmd:<{cmd_width}}")
 
