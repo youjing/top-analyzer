@@ -216,12 +216,70 @@ def ensure_time_order(file1, file2):
     
     return file1, file2
 
+def parse_system_memory(filename):
+    """解析top输出文件中的系统内存信息"""
+    with open(filename, 'r') as f:
+        for line in f:
+            if line.startswith('MiB Mem'):
+                parts = line.split()
+                total = float(parts[3])
+                used = float(parts[7])
+                free = float(parts[5])
+                return {
+                    'total': total,
+                    'used': used,
+                    'free': free,
+                    'used_percent': (used / total * 100) if total > 0 else 0
+                }
+    return None
+
+def compare_system_memory(file1, file2):
+    """比较两个时间点的系统内存使用情况"""
+    mem1 = parse_system_memory(file1)
+    mem2 = parse_system_memory(file2)
+    
+    if mem1 and mem2:
+        change = mem2['used'] - mem1['used']
+        change_percent = change / mem1['total'] * 100 if mem1['total'] > 0 else 0
+        return {
+            'before': mem1,
+            'after': mem2,
+            'change': change,
+            'change_percent': change_percent
+        }
+    return None
+
+def print_system_memory_change(file1, file2):
+    """打印系统内存使用变化情况"""
+    result = compare_system_memory(file1, file2)
+    if result:
+        # 获取时间戳
+        time1 = parse_timestamp_from_filename(file1)
+        time2 = parse_timestamp_from_filename(file2)
+        
+        print("\n系统内存使用情况变化:")
+        print("-" * 80)
+        print(f"初始状态（{time1.strftime('%Y-%m-%d %H:%M')}）: "
+              f"总内存 {result['before']['total']:.1f} MiB, "
+              f"已用 {result['before']['used']:.1f} MiB ({result['before']['used_percent']:.1f}%), "
+              f"空闲 {result['before']['free']:.1f} MiB")
+        print(f"最终状态（{time2.strftime('%Y-%m-%d %H:%M')}）: "
+              f"总内存 {result['after']['total']:.1f} MiB, "
+              f"已用 {result['after']['used']:.1f} MiB ({result['after']['used_percent']:.1f}%), "
+              f"空闲 {result['after']['free']:.1f} MiB")
+        print(f"内存变化: {result['change']:+.1f} MiB ({result['change_percent']:+.1f}% 相对于总内存)")
+        print("-" * 80)
+        print()
+
 def main():
     args = parse_args()
     
     try:
         # 确保文件按时间顺序排列
         file1, file2 = ensure_time_order(args.file1, args.file2)
+        
+        # 显示系统内存使用变化情况
+        print_system_memory_change(file1, file2)
         
         # 比较内存变化
         changes = compare_memory(file1, file2)
