@@ -259,11 +259,11 @@ def print_system_memory_change(file1, file2):
         
         print("\n系统内存使用情况变化:")
         print("-" * 80)
-        print(f"初始状态（{time1.strftime('%Y-%m-%d %H:%M')}）: "
+        print(f"初始状态（{time1.strftime('%Y-%m-%d %H:%M')}): "
               f"总内存 {result['before']['total']:.1f} MiB, "
               f"已用 {result['before']['used']:.1f} MiB ({result['before']['used_percent']:.1f}%), "
               f"空闲 {result['before']['free']:.1f} MiB")
-        print(f"最终状态（{time2.strftime('%Y-%m-%d %H:%M')}）: "
+        print(f"最终状态（{time2.strftime('%Y-%m-%d %H:%M')}): "
               f"总内存 {result['after']['total']:.1f} MiB, "
               f"已用 {result['after']['used']:.1f} MiB ({result['after']['used_percent']:.1f}%), "
               f"空闲 {result['after']['free']:.1f} MiB")
